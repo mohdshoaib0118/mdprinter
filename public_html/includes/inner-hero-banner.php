@@ -30,7 +30,7 @@ $breadcrumb   = $breadcrumb ?? [];
             <i class="<?= e($heroIcon) ?>"></i> <?= e($heroBadge) ?>
         </div>
 
-        <h1 style="font-size: 2.8rem; font-weight: 900; color: #ffffff; margin-bottom: 16px; line-height: 1.18; letter-spacing: -0.8px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+        <h1 class="inner-hero-title" style="font-size: 2.8rem; font-weight: 900; color: #ffffff; margin-bottom: 16px; line-height: 1.18; letter-spacing: -0.8px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
             <?= e($heroTitle) ?>
         </h1>
 

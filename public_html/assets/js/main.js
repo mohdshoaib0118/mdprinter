@@ -43,17 +43,59 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 1. Mobile Menu Toggle
+    // 1. Mobile Menu Toggle with Backdrop Overlay
     const mobileToggle = document.querySelector('.mobile-toggle');
     const navMenu = document.querySelector('.nav-menu');
 
     if (mobileToggle && navMenu) {
-        mobileToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
+        let navBackdrop = document.querySelector('.nav-backdrop');
+        if (!navBackdrop) {
+            navBackdrop = document.createElement('div');
+            navBackdrop.className = 'nav-backdrop';
+            document.body.appendChild(navBackdrop);
+        }
+
+        const toggleNav = (show) => {
+            const isActive = show !== undefined ? show : !navMenu.classList.contains('active');
+            if (isActive) {
+                navMenu.classList.add('active');
+                navBackdrop.classList.add('active');
+                document.body.classList.add('nav-open');
+            } else {
+                navMenu.classList.remove('active');
+                navBackdrop.classList.remove('active');
+                document.body.classList.remove('nav-open');
+            }
             const icon = mobileToggle.querySelector('i');
             if (icon) {
-                icon.classList.toggle('fa-bars');
-                icon.classList.toggle('fa-times');
+                if (isActive) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+        };
+
+        mobileToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleNav();
+        });
+
+        navBackdrop.addEventListener('click', () => toggleNav(false));
+
+        navMenu.querySelectorAll('a, button:not(.mobile-toggle)').forEach(clickable => {
+            clickable.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    toggleNav(false);
+                }
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 992 && navMenu.classList.contains('active')) {
+                toggleNav(false);
             }
         });
     }
