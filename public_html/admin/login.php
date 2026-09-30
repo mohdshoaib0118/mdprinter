@@ -87,8 +87,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div style="width: 100%; max-width: 440px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 24px; padding: 40px; box-shadow: 0 15px 45px rgba(0,0,0,0.06);">
     <div style="text-align: center; margin-bottom: 30px;">
-        <a href="<?= SITE_URL ?>/" class="brand-logo" style="justify-content: center; margin-bottom: 16px;">
-            <img src="<?= SITE_URL ?>/assets/images/logo-header.svg" alt="MD Printers" style="height: 52px; max-width: 220px; object-fit: contain;">
+        <a href="<?= SITE_URL ?>/" class="brand-logo" style="display: flex; align-items: center; justify-content: center; gap: 12px; text-decoration: none; margin-bottom: 20px;">
+            <img src="<?= SITE_URL ?>/assets/images/logo-official.png" alt="MD Printers" style="height: 54px; width: 54px; object-fit: contain;">
+            <div style="display: flex; flex-direction: column; line-height: 1.1; text-align: left;">
+                <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.35rem; font-weight: 900; color: #0f172a; letter-spacing: 0.5px; text-transform: uppercase;">
+                    MD <span style="color: var(--cmyk-cyan, #00aeef);">PRINTERS</span>
+                </span>
+                <span style="font-size: 0.65rem; font-weight: 800; color: #64748b; letter-spacing: 1.4px; text-transform: uppercase;">
+                    CMS Control Portal
+                </span>
+            </div>
         </a>
         <h2 style="font-size: 1.3rem; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">CMS Portal Login</h2>
         <p style="font-size: 0.88rem; color: #64748b; margin: 0;">Sign in to manage print catalogue, quotes & content.</p>

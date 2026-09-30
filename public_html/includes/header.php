@@ -100,7 +100,45 @@
 
     <!-- CSS Assets -->
     <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/main.css">
+</head>
 <body class="cmyk-bg-pattern">
+
+<!-- LUXURY BRAND PRELOADER -->
+<div id="site-preloader" class="site-preloader">
+    <div class="preloader-inner">
+        <div class="preloader-spinner-box">
+            <div class="cmyk-ring cyan"></div>
+            <div class="cmyk-ring magenta"></div>
+            <div class="cmyk-ring yellow"></div>
+            <div class="cmyk-ring gold"></div>
+            <div class="preloader-center-logo">
+                <img src="<?= SITE_URL ?>/assets/images/logo-official.png" alt="MD Printers Logo" style="width: 34px; height: 34px; object-fit: contain; border-radius: 50%;">
+            </div>
+        </div>
+        <div class="preloader-brand-title">MD PRINTERS</div>
+        <div class="preloader-subtext">COMMERCIAL PRINT PRESS</div>
+        <div class="preloader-bar-wrap">
+            <div class="preloader-bar-fill"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function() {
+    function hideLoader() {
+        var loader = document.getElementById('site-preloader');
+        if (loader) {
+            loader.classList.add('loaded');
+            setTimeout(function() { loader.style.display = 'none'; }, 400);
+        }
+    }
+    if (document.readyState === 'complete') {
+        hideLoader();
+    } else {
+        window.addEventListener('load', hideLoader);
+        setTimeout(hideLoader, 800);
+    }
+})();
+</script>
 
 <!-- SVG Filter for Gooey Liquid Blob Buttons -->
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display: block; height: 0; width: 0; position: absolute; pointer-events: none;" aria-hidden="true">
@@ -136,6 +174,23 @@
                 <button type="button" data-modal="sample-kit" class="top-util-btn btn-sample desktop-only">
                     <i class="fas fa-box-open"></i> Request Free Sample Kit
                 </button>
+                
+                <?php if (is_customer_logged_in()): ?>
+                    <a href="<?= SITE_URL ?>/dashboard" class="top-util-btn desktop-only" style="background: rgba(0, 168, 232, 0.15); color: #00a8e8; font-weight: 800; border: 1px solid rgba(0, 168, 232, 0.3);">
+                        <i class="fas fa-user-circle"></i> <?= e($_SESSION['customer_name'] ?? 'My Account') ?>
+                    </a>
+                    <a href="<?= SITE_URL ?>/logout" class="top-util-btn desktop-only" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; font-weight: 700;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                <?php else: ?>
+                    <a href="<?= SITE_URL ?>/login" class="top-util-btn desktop-only" style="background: rgba(0, 168, 232, 0.15); color: #00a8e8; font-weight: 800; border: 1px solid rgba(0, 168, 232, 0.3);">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="<?= SITE_URL ?>/register" class="top-util-btn desktop-only" style="background: rgba(255, 183, 3, 0.2); color: #b45309; font-weight: 800; border: 1px solid rgba(255, 183, 3, 0.4);">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                <?php endif; ?>
+
                 <?php $waLink = Setting::get('whatsapp_url') ?: (Setting::get('whatsapp_number') ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', Setting::get('whatsapp_number')) : 'https://wa.me/918146141450'); ?>
                 <a href="<?= e($waLink) ?>" target="_blank" class="top-util-btn btn-whatsapp">
                     <i class="fab fa-whatsapp"></i> WhatsApp Quote
@@ -149,31 +204,43 @@
 <header class="site-header">
     <div class="container">
         <div class="header-inner">
-            <a href="<?= SITE_URL ?>/" class="brand-logo" aria-label="MD Printers Home">
-                <img src="<?= SITE_URL ?>/assets/images/logo-header.svg" alt="MD Printers - Design Print Advertising" class="brand-logo-img">
+            <a href="<?= SITE_URL ?>/" class="brand-logo" aria-label="MD Printers Home" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+                <img src="<?= SITE_URL ?>/assets/images/logo-official.png" alt="MD Printers" class="brand-logo-img" style="height: 50px; width: 50px; object-fit: contain;">
+                <div style="display: flex; flex-direction: column; line-height: 1.1;">
+                    <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.3rem; font-weight: 900; color: #0f172a; letter-spacing: 0.5px; text-transform: uppercase;">
+                        MD <span style="color: var(--cmyk-cyan, #00aeef);">PRINTERS</span>
+                    </span>
+                    <span style="font-size: 0.65rem; font-weight: 800; color: #64748b; letter-spacing: 1.4px; text-transform: uppercase;">
+                        Design • Print • Advertising
+                    </span>
+                </div>
             </a>
 
-            <!-- Header Quick Search Bar -->
-            <form action="<?= SITE_URL ?>/products" method="GET" class="header-search-form desktop-only">
-                <input type="text" name="search" placeholder="Search product catalogue..." aria-label="Search print catalogue">
-                <button type="submit" aria-label="Submit search"><i class="fas fa-search"></i></button>
-            </form>
-
             <ul class="nav-menu">
-                <li class="mobile-search-item mobile-only" style="padding: 10px 0;">
-                    <form action="<?= SITE_URL ?>/products" method="GET" style="display: flex; gap: 8px;">
-                        <input type="text" name="search" placeholder="Search print products..." class="form-control" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
-                        <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-search"></i></button>
-                    </form>
-                </li>
                 <li><a href="<?= SITE_URL ?>/" class="nav-link <?= ($route === '' || $route === 'home') ? 'active' : '' ?>"><i class="fas fa-home mobile-only"></i> Home</a></li>
                 <li><a href="<?= SITE_URL ?>/about" class="nav-link <?= $route === 'about' ? 'active' : '' ?>"><i class="fas fa-info-circle mobile-only"></i> About Us</a></li>
                 <li><a href="<?= SITE_URL ?>/services" class="nav-link <?= $route === 'services' ? 'active' : '' ?>"><i class="fas fa-cogs mobile-only"></i> Services</a></li>
                 <li><a href="<?= SITE_URL ?>/products" class="nav-link <?= $route === 'products' ? 'active' : '' ?>"><i class="fas fa-box-open mobile-only"></i> Products</a></li>
                 <li><a href="<?= SITE_URL ?>/portfolio" class="nav-link <?= $route === 'portfolio' ? 'active' : '' ?>"><i class="fas fa-images mobile-only"></i> Portfolio</a></li>
-                <li><a href="<?= SITE_URL ?>/blog" class="nav-link <?= $route === 'blog' ? 'active' : '' ?>"><i class="fas fa-blog mobile-only"></i> Blog</a></li>
+                <li><a href="<?= SITE_URL ?>/blog" class="nav-link <?= $route === 'blog' ? 'active' : '' ?>"><i class="fas fa-newspaper mobile-only"></i> Blog</a></li>
                 <li><a href="<?= SITE_URL ?>/contact" class="nav-link <?= $route === 'contact' ? 'active' : '' ?>"><i class="fas fa-envelope mobile-only"></i> Contact</a></li>
+                
+                <!-- Customer Auth Actions in Mobile Menu -->
                 <li class="mobile-only" style="padding-top: 14px; border-top: 1px solid #e2e8f0; margin-top: 10px;">
+                    <?php if (is_customer_logged_in()): ?>
+                        <div style="display: flex; gap: 10px;">
+                            <a href="<?= SITE_URL ?>/dashboard" class="btn btn-primary btn-sm" style="flex: 1; font-weight: 700;"><i class="fas fa-th-large"></i> Dashboard</a>
+                            <a href="<?= SITE_URL ?>/logout" class="btn btn-outline btn-sm" style="flex: 1; font-weight: 700; color: #ef4444; border-color: #ef4444;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    <?php else: ?>
+                        <div style="display: flex; gap: 10px;">
+                            <a href="<?= SITE_URL ?>/login" class="btn btn-primary btn-sm" style="flex: 1; font-weight: 700;"><i class="fas fa-sign-in-alt"></i> Login</a>
+                            <a href="<?= SITE_URL ?>/register" class="btn btn-magenta btn-sm" style="flex: 1; font-weight: 700;"><i class="fas fa-user-plus"></i> Register</a>
+                        </div>
+                    <?php endif; ?>
+                </li>
+
+                <li class="mobile-only" style="padding-top: 10px;">
                     <div style="display: flex; gap: 10px;">
                         <button type="button" data-modal="track-order" class="btn btn-outline btn-sm" style="flex: 1; font-weight: 700;"><i class="fas fa-search-location"></i> Track Order</button>
                         <button type="button" data-modal="sample-kit" class="btn btn-magenta btn-sm" style="flex: 1; font-weight: 700;"><i class="fas fa-box"></i> Sample Kit</button>
@@ -182,6 +249,16 @@
             </ul>
 
             <div class="header-actions">
+                <?php if (is_customer_logged_in()): ?>
+                    <a href="<?= SITE_URL ?>/dashboard" class="btn btn-outline btn-sm desktop-only" style="border-color: var(--cmyk-cyan); color: var(--cmyk-cyan); font-weight: 800;">
+                        <i class="fas fa-th-large"></i> Dashboard
+                    </a>
+                <?php else: ?>
+                    <a href="<?= SITE_URL ?>/login" class="btn btn-outline btn-sm desktop-only" style="border-color: var(--cmyk-cyan); color: var(--cmyk-cyan); font-weight: 800;">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                <?php endif; ?>
+
                 <button type="button" data-modal="callback" class="btn btn-outline btn-sm desktop-only" style="border-color: var(--cmyk-cyan); color: var(--cmyk-cyan); font-weight: 700;"><i class="fas fa-phone-alt"></i> Call Us</button>
                 <button type="button" data-modal="quick-quote" class="btn btn-primary btn-sm desktop-only"><i class="fas fa-file-invoice-dollar"></i> Get Quote</button>
                 <button class="mobile-toggle" aria-label="Toggle Menu"><i class="fas fa-bars"></i></button>
@@ -189,7 +266,6 @@
         </div>
     </div>
 </header>
-
 
 <!-- Dynamic Quick Service Circle Bar -->
 <?php require_once INCLUDES_PATH . '/quick-services-bar.php'; ?>

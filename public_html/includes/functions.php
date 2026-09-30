@@ -20,6 +20,10 @@ function csrf_token(): string {
     return $_SESSION['csrf_token'];
 }
 
+function generate_csrf(): string {
+    return csrf_token();
+}
+
 /**
  * Generate CSRF hidden input HTML
  */
@@ -76,6 +80,18 @@ function get_flash(): ?array {
         return $flash;
     }
     return null;
+}
+
+function display_flash(): void {
+    $flash = get_flash();
+    if ($flash) {
+        $type = e($flash['type'] ?? 'info');
+        $msg = e($flash['message'] ?? '');
+        $bg = ($type === 'success') ? '#dcfce7' : (($type === 'danger' || $type === 'error') ? '#fee2e2' : '#e0f2fe');
+        $color = ($type === 'success') ? '#15803d' : (($type === 'danger' || $type === 'error') ? '#991b1b' : '#0369a1');
+        $border = ($type === 'success') ? '#bbf7d0' : (($type === 'danger' || $type === 'error') ? '#fecaca' : '#bae6fd');
+        echo '<div style="padding: 14px 18px; border-radius: 10px; margin-bottom: 20px; font-weight: 700; font-size: 0.9rem; background: ' . $bg . '; color: ' . $color . '; border: 1px solid ' . $border . ';">' . $msg . '</div>';
+    }
 }
 
 /**
@@ -256,5 +272,79 @@ function render_pagination(int $currentPage, int $totalPages, string $baseUrl = 
     $html .= '</div>';
     return $html;
 }
+
+/**
+ * Check if a customer is logged in
+ */
+function is_customer_logged_in(): bool {
+    return !empty($_SESSION['customer_logged_in']) && $_SESSION['customer_logged_in'] === true && !empty($_SESSION['customer_id']);
+}
+
+/**
+ * Get current logged in customer data
+ */
+function current_customer(): ?array {
+    if (!is_customer_logged_in()) {
+        return null;
+    }
+    require_once MODELS_PATH . '/Customer.php';
+    return Customer::getById((int)$_SESSION['customer_id']);
+}
+
+/**
+ * Guard middleware for customer authenticated routes
+ */
+function require_customer_login(): void {
+    if (!is_customer_logged_in()) {
+        set_flash('danger', 'Please log in to your MD Printers B2B customer account to access this page.');
+        redirect_to(SITE_URL . '/login');
+    }
+}
+
+/**
+ * IDOR Protection: Verify if the requested resource belongs to the current logged-in customer
+ */
+function verify_customer_ownership(int $ownerId): bool {
+    if (!is_customer_logged_in()) {
+        return false;
+    }
+    return (int)$_SESSION['customer_id'] === (int)$ownerId;
+}
+
+/**
+ * Initialize customer login session with session fixation prevention
+ */
+function customer_login_session(array $customer): void {
+    // Regenerate session ID to prevent session fixation attacks
+    session_regenerate_id(true);
+
+    $_SESSION['customer_logged_in'] = true;
+    $_SESSION['customer_id']        = (int)$customer['id'];
+    $_SESSION['customer_name']      = $customer['contact_person'];
+    $_SESSION['customer_company']   = $customer['company_name'];
+    $_SESSION['customer_email']     = $customer['email'];
+    $_SESSION['customer_type']      = $customer['customer_type'] ?? 'Business';
+    $_SESSION['customer_tier']      = $customer['customer_type'] ?? ($customer['tier'] ?? 'Business');
+    $_SESSION['customer_status']    = $customer['account_status'];
+}
+
+/**
+ * Securely clear customer session on logout
+ */
+function customer_logout_session(): void {
+    unset(
+        $_SESSION['customer_logged_in'],
+        $_SESSION['customer_id'],
+        $_SESSION['customer_name'],
+        $_SESSION['customer_company'],
+        $_SESSION['customer_email'],
+        $_SESSION['customer_type'],
+        $_SESSION['customer_status']
+    );
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_regenerate_id(true);
+    }
+}
+
 
 

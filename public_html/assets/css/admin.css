@@ -58,11 +58,13 @@ body.admin-body {
 
 .sidebar-menu {
   list-style: none;
-  padding: 16px 12px;
+  padding: 16px 12px 60px 12px;
   margin: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
 }
 
@@ -486,6 +488,122 @@ input:focus, select:focus, textarea:focus {
   .sidebar-link { padding: 10px 0 !important; justify-content: center !important; }
   .sidebar-link i { font-size: 1.15rem !important; margin: 0 !important; }
   .admin-content { padding: 14px 8px !important; }
+}
+
+/* ============================================================
+   ADMIN SIDEBAR SCROLLING & BUTTON HOVER SYSTEM OVERRIDES
+   ============================================================ */
+.admin-sidebar {
+  max-height: 100vh !important;
+  overflow-y: auto !important;
+}
+
+.sidebar-menu {
+  padding-bottom: 60px !important;
+  overflow-y: auto !important;
+}
+
+/* Admin Button Hover Shimmer Sweep & Lift System */
+body.admin-body .btn {
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.3s ease,
+              border-color 0.3s ease,
+              color 0.3s ease !important;
+}
+
+body.admin-body .btn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -130%;
+  width: 75%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  transition: left 0.65s cubic-bezier(0.19, 1, 0.22, 1);
+  pointer-events: none;
+  z-index: 2;
+}
+
+body.admin-body .btn:hover::after {
+  left: 140%;
+}
+
+body.admin-body .btn:hover {
+  transform: translateY(-2px) !important;
+}
+
+body.admin-body .btn:active {
+  transform: translateY(0) scale(0.97) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+}
+
+body.admin-body .btn-primary {
+  background-color: var(--cmyk-cyan) !important;
+  color: #ffffff !important;
+  border: 1px solid var(--cmyk-cyan) !important;
+}
+
+body.admin-body .btn-primary:hover {
+  background-color: #0077b6 !important;
+  color: #ffffff !important;
+  border-color: #0077b6 !important;
+  box-shadow: 0 6px 18px rgba(0, 133, 178, 0.35) !important;
+}
+
+body.admin-body .btn-outline, 
+body.admin-body .btn-outline-secondary {
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+body.admin-body .btn-outline:hover, 
+body.admin-body .btn-outline-secondary:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12) !important;
+}
+
+body.admin-body .btn-sm {
+  padding: 7px 14px !important;
+  font-size: 0.85rem !important;
+  border-radius: 8px !important;
+}
+
+/* Admin Search Bar Alignment System */
+.admin-search-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  max-width: 680px;
+  width: 100%;
+}
+
+.admin-search-input {
+  flex: 1;
+  background: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 10px !important;
+  padding: 10px 16px !important;
+  font-size: 0.92rem !important;
+  color: #0f172a !important;
+}
+
+.admin-search-input:focus {
+  border-color: var(--cmyk-cyan) !important;
+  box-shadow: 0 0 0 3px rgba(0, 133, 178, 0.15) !important;
 }
 
 

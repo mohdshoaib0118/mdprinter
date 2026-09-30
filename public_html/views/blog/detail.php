@@ -1,4 +1,9 @@
 <?php
+$currentArticle = $currentBlog ?? $currentArticle ?? null;
+if (!$currentArticle) {
+    redirect_to(SITE_URL . '/blog');
+}
+
 include INCLUDES_PATH . '/header.php';
 
 $heroBadge    = 'TECHNICAL ARTICLE';

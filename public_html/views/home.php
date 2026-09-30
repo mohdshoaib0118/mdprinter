@@ -108,19 +108,21 @@ $productMeta = [
                 $pm = $productMeta[$slug] ?? ['rating' => '4.9 (120+ reviews)', 'badge' => 'Popular'];
             ?>
                 <div class="card-feature" style="background: #ffffff; padding: 20px; border: 1px solid #cbd5e1; border-radius: 20px; box-shadow: var(--shadow-md); display: flex; flex-direction: column;">
-                    <div style="position: relative; height: 210px; border-radius: 14px; overflow: hidden; margin-bottom: 18px; background: #f1f5f9; flex-shrink: 0;">
+                    <a href="<?= SITE_URL ?>/order/product/<?= $slug ?>" style="position: relative; height: 210px; border-radius: 14px; overflow: hidden; margin-bottom: 18px; background: #f1f5f9; flex-shrink: 0; display: block;">
                         <img src="<?= media_url($prod['main_image']) ?>" alt="<?= e($prod['name']) ?>" onerror="this.onerror=null; this.src='<?= SITE_URL ?>/assets/images/placeholder.svg';" style="width: 100%; height: 100%; object-fit: cover;">
                         <span style="position: absolute; top: 12px; right: 12px; background: var(--cmyk-cyan); color: #fff; font-size: 0.72rem; font-weight: 800; padding: 4px 12px; border-radius: 14px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
                             <?= e($pm['badge']) ?>
                         </span>
-                    </div>
+                    </a>
 
                     <div class="card-feature-body" style="display: flex; flex-direction: column; flex-grow: 1;">
                         <div style="font-size: 0.78rem; color: #eab308; font-weight: 800; margin-bottom: 8px;">
                             <i class="fas fa-star"></i> <?= e($pm['rating']) ?>
                         </div>
 
-                        <h3 style="font-size: 1.18rem; font-weight: 800; color: #0f172a; margin-bottom: 10px; line-height: 1.35;"><?= e($prod['name']) ?></h3>
+                        <h3 style="font-size: 1.18rem; font-weight: 800; color: #0f172a; margin-bottom: 10px; line-height: 1.35;">
+                            <a href="<?= SITE_URL ?>/order/product/<?= $slug ?>" style="text-decoration: none; color: inherit;"><?= e($prod['name']) ?></a>
+                        </h3>
                         <p style="font-size: 0.88rem; color: #64748b; line-height: 1.6; margin-bottom: 20px; flex-grow: 1; height: 42px; overflow: hidden;"><?= e($prod['short_desc']) ?></p>
 
                         <div style="border-top: 1px solid #f1f5f9; padding-top: 16px; margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
@@ -129,7 +131,7 @@ $productMeta = [
                                     <i class="fas fa-check-circle"></i> Custom Press Run
                                 </span>
                             </div>
-                            <a href="<?= SITE_URL ?>/request-quote?product=<?= urlencode($prod['name']) ?>" class="btn btn-primary btn-sm"><i class="fas fa-file-invoice"></i> Get Quote</a>
+                            <a href="<?= SITE_URL ?>/order/product/<?= $slug ?>" class="btn btn-primary btn-sm"><i class="fas fa-cog"></i> Configure & Order</a>
                         </div>
                     </div>
                 </div>
@@ -254,7 +256,7 @@ $productMeta = [
 
         <div class="grid-3">
             <?php foreach ($testimonials as $t): ?>
-                <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 14px rgba(0,0,0,0.04);">
+                <div class="testimonial-card">
                     <div>
                         <div style="color: #eab308; margin-bottom: 14px; font-size: 0.95rem;">
                             <?php for($i=0; $i<$t['rating']; $i++): ?><i class="fas fa-star"></i><?php endfor; ?>

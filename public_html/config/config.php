@@ -32,6 +32,11 @@ define('VIEWS_PATH', ROOT_PATH . '/views');
 define('UPLOADS_PATH', ROOT_PATH . '/uploads');
 define('ADMIN_PATH', ROOT_PATH . '/admin');
 
+// Autoload Composer Vendor Dependencies if available
+if (file_exists(ROOT_PATH . '/vendor/autoload.php')) {
+    require_once ROOT_PATH . '/vendor/autoload.php';
+}
+
 // Base URL calculation dynamically (works on XAMPP localhost and production domains)
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';

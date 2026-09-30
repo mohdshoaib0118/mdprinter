@@ -8,19 +8,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_product'])) {
     if (verify_csrf($_POST['csrf_token'] ?? '')) {
         $name = trim($_POST['name'] ?? '');
         $productData = [
-            'id'           => !empty($_POST['id']) ? (int)$_POST['id'] : null,
-            'category_id'  => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : 1,
-            'name'         => $name,
-            'slug'         => !empty($_POST['slug']) ? slugify($_POST['slug']) : slugify($name),
-            'short_desc'   => trim($_POST['short_desc'] ?? ''),
-            'full_desc'    => trim($_POST['full_desc'] ?? ''),
-            'main_image'   => trim($_POST['main_image'] ?? ''),
-            'video_url'    => trim($_POST['video_url'] ?? ''),
-            'min_quantity' => (int)($_POST['min_quantity'] ?? 100),
-            'is_featured'  => isset($_POST['is_featured']) ? 1 : 0,
-            'status'       => $_POST['status'] ?? 'published',
-            'meta_title'   => trim($_POST['meta_title'] ?? ''),
-            'meta_desc'    => trim($_POST['meta_desc'] ?? '')
+            'id'                       => !empty($_POST['id']) ? (int)$_POST['id'] : null,
+            'category_id'              => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : 1,
+            'product_group_id'         => !empty($_POST['product_group_id']) ? (int)$_POST['product_group_id'] : null,
+            'name'                     => $name,
+            'slug'                     => !empty($_POST['slug']) ? slugify($_POST['slug']) : slugify($name),
+            'short_desc'               => trim($_POST['short_desc'] ?? ''),
+            'full_desc'                => trim($_POST['full_desc'] ?? ''),
+            'main_image'               => trim($_POST['main_image'] ?? ''),
+            'video_url'                => trim($_POST['video_url'] ?? ''),
+            'min_quantity'             => (int)($_POST['min_quantity'] ?? 100),
+            'max_quantity'             => !empty($_POST['max_quantity']) ? (int)$_POST['max_quantity'] : null,
+            'quantity_step'            => !empty($_POST['quantity_step']) ? (int)$_POST['quantity_step'] : 1,
+            'production_time'          => trim($_POST['production_time'] ?? '2-3 Business Days'),
+            'sku'                      => trim($_POST['sku'] ?? ''),
+            'product_code'             => trim($_POST['product_code'] ?? ''),
+            'product_class'            => trim($_POST['product_class'] ?? ''),
+            'product_core'             => trim($_POST['product_core'] ?? ''),
+            'specialization'           => trim($_POST['specialization'] ?? ''),
+            'points_to_note'           => trim($_POST['points_to_note'] ?? ''),
+            'allow_pressline'          => isset($_POST['allow_pressline']) ? 1 : 0,
+            'allow_artwork_upload'     => isset($_POST['allow_artwork_upload']) ? 1 : 0,
+            'free_delivery_min_qty'    => !empty($_POST['free_delivery_min_qty']) ? (int)$_POST['free_delivery_min_qty'] : null,
+            'free_delivery_min_amount' => !empty($_POST['free_delivery_min_amount']) ? (float)$_POST['free_delivery_min_amount'] : null,
+            'specifications_json'      => trim($_POST['specifications_json'] ?? ''),
+            'is_featured'              => isset($_POST['is_featured']) ? 1 : 0,
+            'status'                   => $_POST['status'] ?? 'published',
+            'meta_title'               => trim($_POST['meta_title'] ?? ''),
+            'meta_desc'                => trim($_POST['meta_desc'] ?? '')
         ];
 
         // If updating and no image text supplied, retain existing image
@@ -132,7 +147,7 @@ $flash = get_flash();
                     <tr>
                         <td style="text-align: center; font-weight: 700; color: #94a3b8; font-size: 0.85rem;"><?= $srNo ?></td>
                         <td>
-                            <img src="<?= media_url($p['main_image']) ?>" alt="" 
+                            <img src="<?= media_url($p['main_image']) ?>" alt="<?= e($p['name']) ?>" 
                                  onerror="this.onerror=null; this.src='<?= SITE_URL ?>/assets/images/placeholder.svg';" 
                                  style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; background: #f8fafc;">
                         </td>

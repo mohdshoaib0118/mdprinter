@@ -80,7 +80,7 @@ $settings = Setting::getAll();
 
         <div class="form-group" style="margin-bottom: 16px;">
             <label style="display: block; font-size: 0.88rem; font-weight: 700; color: #334155; margin-bottom: 6px;">Business Facility Address</label>
-            <textarea name="business_address" rows="2" class="form-control"><?= e($settings['business_address'] ?? 'Back side Chandigarh Sweets, Plot No. 360, Industrial Area Phase I, Chandigarh, 160002') ?></textarea>
+            <textarea name="business_address" rows="2" class="form-control"><?= e($settings['business_address'] ?? 'Plot No. 360, Phase-1, Industrial Area, Chandigarh') ?></textarea>
         </div>
 
         <div class="form-group">

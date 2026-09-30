@@ -5,16 +5,44 @@
 require_once CONFIG_PATH . '/database.php';
 
 class Product {
+    public static function initColumns(): void {
+        $db = Database::getInstance();
+        if (!$db) return;
+        try {
+            $cols = [
+                "ALTER TABLE products ADD COLUMN video_url VARCHAR(255) NULL",
+                "ALTER TABLE products ADD COLUMN product_group_id INT UNSIGNED NULL AFTER category_id",
+                "ALTER TABLE products ADD COLUMN production_time VARCHAR(100) DEFAULT '2-3 Business Days'",
+                "ALTER TABLE products ADD COLUMN max_quantity INT UNSIGNED NULL",
+                "ALTER TABLE products ADD COLUMN quantity_step INT UNSIGNED DEFAULT 1",
+                "ALTER TABLE products ADD COLUMN sku VARCHAR(100) NULL",
+                "ALTER TABLE products ADD COLUMN product_code VARCHAR(100) NULL",
+                "ALTER TABLE products ADD COLUMN product_class VARCHAR(100) NULL",
+                "ALTER TABLE products ADD COLUMN product_core VARCHAR(100) NULL",
+                "ALTER TABLE products ADD COLUMN specialization TEXT NULL",
+                "ALTER TABLE products ADD COLUMN points_to_note TEXT NULL",
+                "ALTER TABLE products ADD COLUMN allow_pressline TINYINT(1) DEFAULT 0",
+                "ALTER TABLE products ADD COLUMN allow_artwork_upload TINYINT(1) DEFAULT 1",
+                "ALTER TABLE products ADD COLUMN free_delivery_min_qty INT UNSIGNED NULL",
+                "ALTER TABLE products ADD COLUMN free_delivery_min_amount DECIMAL(12,2) NULL"
+            ];
+            foreach ($cols as $sql) {
+                try { $db->exec($sql); } catch (\Throwable $e) {}
+            }
+        } catch (\Throwable $e) {}
+    }
+
     public static function getAll(array $filters = [], int $limit = 20, int $offset = 0): array {
         $db = Database::getInstance();
         if (!$db) return self::getFallbackProducts();
 
-        try {
-            try { $db->exec("ALTER TABLE products ADD COLUMN video_url VARCHAR(255) NULL"); } catch (\Throwable $ex) {}
+        self::initColumns();
 
-            $sql = "SELECT p.*, c.name as category_name, c.slug as category_slug 
+        try {
+            $sql = "SELECT p.*, c.name as category_name, c.slug as category_slug, g.name as group_name, g.slug as group_slug
                     FROM products p 
                     LEFT JOIN product_categories c ON p.category_id = c.id 
+                    LEFT JOIN product_groups g ON p.product_group_id = g.id
                     WHERE 1=1";
             $params = [];
 
@@ -26,6 +54,11 @@ class Product {
             if (!empty($filters['category_slug'])) {
                 $sql .= " AND c.slug = :cat_slug";
                 $params['cat_slug'] = $filters['category_slug'];
+            }
+
+            if (!empty($filters['group_id'])) {
+                $sql .= " AND p.product_group_id = :grp_id";
+                $params['grp_id'] = (int)$filters['group_id'];
             }
 
             if (!empty($filters['is_featured'])) {
@@ -48,6 +81,29 @@ class Product {
         }
     }
 
+    public static function getById(int $id): ?array {
+        $db = Database::getInstance();
+        if (!$db) return null;
+
+        self::initColumns();
+
+        try {
+            $stmt = $db->prepare("SELECT p.*, c.name as category_name, c.slug as category_slug, g.name as group_name, g.slug as group_slug
+                                  FROM products p 
+                                  LEFT JOIN product_categories c ON p.category_id = c.id 
+                                  LEFT JOIN product_groups g ON p.product_group_id = g.id
+                                  WHERE p.id = :id LIMIT 1");
+            $stmt->execute(['id' => $id]);
+            $res = $stmt->fetch();
+            if ($res && empty($res['production_time'])) {
+                $res['production_time'] = '2-3 Business Days';
+            }
+            return $res ?: null;
+        } catch (PDOException $e) {
+            return null;
+        }
+    }
+
     public static function getBySlug(string $slug): ?array {
         $db = Database::getInstance();
         if (!$db) {
@@ -58,16 +114,37 @@ class Product {
             return $fallbacks[0] ?? null;
         }
 
+        self::initColumns();
+
         try {
-            $stmt = $db->prepare("SELECT p.*, c.name as category_name, c.slug as category_slug 
+            $stmt = $db->prepare("SELECT p.*, c.name as category_name, c.slug as category_slug, g.name as group_name, g.slug as group_slug 
                                   FROM products p 
                                   LEFT JOIN product_categories c ON p.category_id = c.id 
+                                  LEFT JOIN product_groups g ON p.product_group_id = g.id
                                   WHERE p.slug = :slug LIMIT 1");
             $stmt->execute(['slug' => $slug]);
             $res = $stmt->fetch();
+            if ($res && empty($res['production_time'])) {
+                $res['production_time'] = '2-3 Business Days';
+            }
             return $res ?: null;
         } catch (PDOException $e) {
             return null;
+        }
+    }
+
+    public static function getProductsByGroup(int $groupId): array {
+        $db = Database::getInstance();
+        if (!$db) return [];
+
+        self::initColumns();
+
+        try {
+            $stmt = $db->prepare("SELECT id, name, slug, main_image, min_quantity FROM products WHERE product_group_id = :grp_id AND status = 'published' ORDER BY name ASC");
+            $stmt->execute(['grp_id' => $groupId]);
+            return $stmt->fetchAll() ?: [];
+        } catch (PDOException $e) {
+            return [];
         }
     }
 
@@ -112,24 +189,44 @@ class Product {
         $db = Database::getInstance();
         if (!$db) return false;
 
-        try {
-            try { $db->exec("ALTER TABLE products ADD COLUMN video_url VARCHAR(255) NULL"); } catch (\Throwable $ex) {}
+        self::initColumns();
 
+        try {
             if (!empty($data['id'])) {
                 $stmt = $db->prepare("UPDATE products SET 
-                    category_id = :category_id, name = :name, slug = :slug, short_desc = :short_desc,
+                    category_id = :category_id, product_group_id = :product_group_id, name = :name, slug = :slug, short_desc = :short_desc,
                     full_desc = :full_desc, main_image = :main_image, video_url = :video_url, min_quantity = :min_quantity,
+                    max_quantity = :max_quantity, quantity_step = :quantity_step, production_time = :production_time,
+                    sku = :sku, product_code = :product_code, product_class = :product_class, product_core = :product_core,
+                    specialization = :specialization, points_to_note = :points_to_note, allow_pressline = :allow_pressline,
+                    allow_artwork_upload = :allow_artwork_upload, free_delivery_min_qty = :free_delivery_min_qty,
+                    free_delivery_min_amount = :free_delivery_min_amount, specifications_json = :specifications_json,
                     is_featured = :is_featured, status = :status, meta_title = :meta_title, meta_desc = :meta_desc 
                     WHERE id = :id");
                 return $stmt->execute([
-                    'category_id' => $data['category_id'] ?? null,
+                    'category_id' => !empty($data['category_id']) ? (int)$data['category_id'] : null,
+                    'product_group_id' => !empty($data['product_group_id']) ? (int)$data['product_group_id'] : null,
                     'name' => $data['name'],
                     'slug' => $data['slug'],
-                    'short_desc' => $data['short_desc'],
-                    'full_desc' => $data['full_desc'],
+                    'short_desc' => $data['short_desc'] ?? '',
+                    'full_desc' => $data['full_desc'] ?? '',
                     'main_image' => $data['main_image'] ?? null,
                     'video_url' => $data['video_url'] ?? '',
                     'min_quantity' => $data['min_quantity'] ?? 100,
+                    'max_quantity' => !empty($data['max_quantity']) ? (int)$data['max_quantity'] : null,
+                    'quantity_step' => !empty($data['quantity_step']) ? (int)$data['quantity_step'] : 1,
+                    'production_time' => $data['production_time'] ?? '2-3 Business Days',
+                    'sku' => $data['sku'] ?? null,
+                    'product_code' => $data['product_code'] ?? null,
+                    'product_class' => $data['product_class'] ?? null,
+                    'product_core' => $data['product_core'] ?? null,
+                    'specialization' => $data['specialization'] ?? null,
+                    'points_to_note' => $data['points_to_note'] ?? null,
+                    'allow_pressline' => isset($data['allow_pressline']) ? (int)$data['allow_pressline'] : 0,
+                    'allow_artwork_upload' => isset($data['allow_artwork_upload']) ? (int)$data['allow_artwork_upload'] : 1,
+                    'free_delivery_min_qty' => !empty($data['free_delivery_min_qty']) ? (int)$data['free_delivery_min_qty'] : null,
+                    'free_delivery_min_amount' => !empty($data['free_delivery_min_amount']) ? (float)$data['free_delivery_min_amount'] : null,
+                    'specifications_json' => $data['specifications_json'] ?? null,
                     'is_featured' => $data['is_featured'] ?? 0,
                     'status' => $data['status'] ?? 'published',
                     'meta_title' => $data['meta_title'] ?? '',
@@ -138,17 +235,32 @@ class Product {
                 ]);
             } else {
                 $stmt = $db->prepare("INSERT INTO products 
-                    (category_id, name, slug, short_desc, full_desc, main_image, video_url, min_quantity, is_featured, status, meta_title, meta_desc) 
-                    VALUES (:category_id, :name, :slug, :short_desc, :full_desc, :main_image, :video_url, :min_quantity, :is_featured, :status, :meta_title, :meta_desc)");
+                    (category_id, product_group_id, name, slug, short_desc, full_desc, main_image, video_url, min_quantity, max_quantity, quantity_step, production_time, sku, product_code, product_class, product_core, specialization, points_to_note, allow_pressline, allow_artwork_upload, free_delivery_min_qty, free_delivery_min_amount, specifications_json, is_featured, status, meta_title, meta_desc) 
+                    VALUES (:category_id, :product_group_id, :name, :slug, :short_desc, :full_desc, :main_image, :video_url, :min_quantity, :max_quantity, :quantity_step, :production_time, :sku, :product_code, :product_class, :product_core, :specialization, :points_to_note, :allow_pressline, :allow_artwork_upload, :free_delivery_min_qty, :free_delivery_min_amount, :specifications_json, :is_featured, :status, :meta_title, :meta_desc)");
                 return $stmt->execute([
-                    'category_id' => $data['category_id'] ?? null,
+                    'category_id' => !empty($data['category_id']) ? (int)$data['category_id'] : null,
+                    'product_group_id' => !empty($data['product_group_id']) ? (int)$data['product_group_id'] : null,
                     'name' => $data['name'],
                     'slug' => $data['slug'],
-                    'short_desc' => $data['short_desc'],
-                    'full_desc' => $data['full_desc'],
+                    'short_desc' => $data['short_desc'] ?? '',
+                    'full_desc' => $data['full_desc'] ?? '',
                     'main_image' => $data['main_image'] ?? null,
                     'video_url' => $data['video_url'] ?? '',
                     'min_quantity' => $data['min_quantity'] ?? 100,
+                    'max_quantity' => !empty($data['max_quantity']) ? (int)$data['max_quantity'] : null,
+                    'quantity_step' => !empty($data['quantity_step']) ? (int)$data['quantity_step'] : 1,
+                    'production_time' => $data['production_time'] ?? '2-3 Business Days',
+                    'sku' => $data['sku'] ?? null,
+                    'product_code' => $data['product_code'] ?? null,
+                    'product_class' => $data['product_class'] ?? null,
+                    'product_core' => $data['product_core'] ?? null,
+                    'specialization' => $data['specialization'] ?? null,
+                    'points_to_note' => $data['points_to_note'] ?? null,
+                    'allow_pressline' => isset($data['allow_pressline']) ? (int)$data['allow_pressline'] : 0,
+                    'allow_artwork_upload' => isset($data['allow_artwork_upload']) ? (int)$data['allow_artwork_upload'] : 1,
+                    'free_delivery_min_qty' => !empty($data['free_delivery_min_qty']) ? (int)$data['free_delivery_min_qty'] : null,
+                    'free_delivery_min_amount' => !empty($data['free_delivery_min_amount']) ? (float)$data['free_delivery_min_amount'] : null,
+                    'specifications_json' => $data['specifications_json'] ?? null,
                     'is_featured' => $data['is_featured'] ?? 0,
                     'status' => $data['status'] ?? 'published',
                     'meta_title' => $data['meta_title'] ?? '',

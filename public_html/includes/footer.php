@@ -6,8 +6,16 @@
     <div class="container">
         <div class="footer-grid">
             <div>
-                <a href="<?= SITE_URL ?>/" class="brand-logo" style="margin-bottom: 20px;">
-                    <img src="<?= SITE_URL ?>/assets/images/logo-footer.svg" alt="MD Printers - Design Print Advertising" class="brand-logo-img" style="height: 52px;">
+                <a href="<?= SITE_URL ?>/" class="brand-logo" style="display: flex; align-items: center; gap: 14px; text-decoration: none; margin-bottom: 20px;">
+                    <img src="<?= SITE_URL ?>/assets/images/logo-official.png" alt="MD Printers" class="brand-logo-img" style="height: 56px; width: 56px; object-fit: contain;">
+                    <div style="display: flex; flex-direction: column; line-height: 1.1;">
+                        <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.45rem; font-weight: 900; color: #ffffff; letter-spacing: 0.5px; text-transform: uppercase;">
+                            MD <span style="color: var(--cmyk-cyan, #00aeef);">PRINTERS</span>
+                        </span>
+                        <span style="font-size: 0.7rem; font-weight: 800; color: #dfba6e; letter-spacing: 1.8px; text-transform: uppercase;">
+                            Commercial Print & Packaging Press
+                        </span>
+                    </div>
                 </a>
                 <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.7; margin-bottom: 24px;">
                     Engineering high-precision commercial offset printing, luxury rigid packaging, variable digital press runs, and corporate advertising with G7 certified color density and ultra-fast turnarounds.

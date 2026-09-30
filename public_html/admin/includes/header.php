@@ -10,6 +10,43 @@
     <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/admin.css">
 </head>
 <body class="admin-body">
+
+<!-- LUXURY BRAND ADMIN PRELOADER -->
+<div id="site-preloader" class="site-preloader">
+    <div class="preloader-inner">
+        <div class="preloader-spinner-box">
+            <div class="cmyk-ring cyan"></div>
+            <div class="cmyk-ring magenta"></div>
+            <div class="cmyk-ring yellow"></div>
+            <div class="cmyk-ring gold"></div>
+            <div class="preloader-center-logo">
+                <img src="<?= SITE_URL ?>/assets/images/logo-official.png" alt="MD Control Logo" style="width: 34px; height: 34px; object-fit: contain; border-radius: 50%;">
+            </div>
+        </div>
+        <div class="preloader-brand-title">MD CONTROL</div>
+        <div class="preloader-subtext">ADMIN CMS PORTAL</div>
+        <div class="preloader-bar-wrap">
+            <div class="preloader-bar-fill"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function() {
+    function hideLoader() {
+        var loader = document.getElementById('site-preloader');
+        if (loader) {
+            loader.classList.add('loaded');
+            setTimeout(function() { loader.style.display = 'none'; }, 400);
+        }
+    }
+    if (document.readyState === 'complete') {
+        hideLoader();
+    } else {
+        window.addEventListener('load', hideLoader);
+        setTimeout(hideLoader, 800);
+    }
+})();
+</script>
 <?php include ADMIN_PATH . '/includes/sidebar.php'; ?>
 <div class="admin-main">
     <div class="admin-topbar">

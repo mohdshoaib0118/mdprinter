@@ -61,14 +61,24 @@ $slides = Banner::getAll(['status' => 'published']);
                         <p class="slide-subtext"><?= e($s['subtitle']) ?></p>
                         
                         <div class="slide-actions">
+                            <?php 
+                                $pLink = trim($s['cta_primary_link'] ?? '#');
+                                if ($pLink !== '#' && strpos($pLink, 'http://') !== 0 && strpos($pLink, 'https://') !== 0 && strpos($pLink, 'tel:') !== 0 && strpos($pLink, 'mailto:') !== 0) {
+                                    $pLink = SITE_URL . '/' . ltrim($pLink, '/');
+                                }
+                                $sLink = trim($s['cta_secondary_link'] ?? '#');
+                                if ($sLink !== '#' && strpos($sLink, 'http://') !== 0 && strpos($sLink, 'https://') !== 0 && strpos($sLink, 'tel:') !== 0 && strpos($sLink, 'mailto:') !== 0) {
+                                    $sLink = SITE_URL . '/' . ltrim($sLink, '/');
+                                }
+                            ?>
                             <?php if (!empty($s['cta_primary_text'])): ?>
-                                <a href="<?= e($s['cta_primary_link'] ?: '#') ?>" class="btn btn-primary btn-lg">
+                                <a href="<?= e($pLink) ?>" class="btn btn-primary btn-lg">
                                     <i class="fas fa-shopping-cart"></i> <?= e($s['cta_primary_text']) ?>
                                 </a>
                             <?php endif; ?>
                             
                             <?php if (!empty(trim($s['cta_secondary_text'] ?? ''))): ?>
-                                <a href="<?= e($s['cta_secondary_link'] ?: '#') ?>" class="btn btn-magenta btn-lg">
+                                <a href="<?= e($sLink) ?>" class="btn btn-magenta btn-lg">
                                     <i class="fas fa-phone-alt"></i> <?= e($s['cta_secondary_text']) ?>
                                 </a>
                             <?php endif; ?>
