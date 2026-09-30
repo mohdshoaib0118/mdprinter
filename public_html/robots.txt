@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /config/
+Disallow: /includes/
+Disallow: /controllers/
+Disallow: /uploads/artworks/
+
+Sitemap: https://mdprinters.com/sitemap.xml.php

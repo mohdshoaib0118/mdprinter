@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 140" width="100%" height="100%">
+  <defs>
+    <linearGradient id="goldGradHdr" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DFBA6E"/>
+      <stop offset="50%" stop-color="#C99E50"/>
+      <stop offset="100%" stop-color="#B88E3E"/>
+    </linearGradient>
+    <linearGradient id="cyanGradHdr" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#009BD6"/>
+      <stop offset="100%" stop-color="#007DAF"/>
+    </linearGradient>
+    <linearGradient id="magentaGradHdr" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EE0083"/>
+      <stop offset="100%" stop-color="#C7006B"/>
+    </linearGradient>
+    <linearGradient id="yellowGradHdr" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFDE00"/>
+      <stop offset="100%" stop-color="#F2B700"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Left Icon Seal -->
+  <g transform="translate(65, 70) scale(0.48)">
+    <circle r="132" fill="none" stroke="url(#goldGradHdr)" stroke-width="7"/>
+    <circle r="121" fill="none" stroke="url(#goldGradHdr)" stroke-width="2.5"/>
+    <circle r="116" fill="none" stroke="url(#goldGradHdr)" stroke-width="5"/>
+    
+    <g transform="translate(-5, 0)">
+      <path d="M-52,48 L-52,-28 L-30,-48 L-30,48 Z" fill="#111827"/>
+      <path d="M-68,48 L-68,-36 L-48,-52 L-20,-24 L5,-52 L26,-32 L-20,16 L-48,-12 L-48,48 Z" fill="url(#magentaGradHdr)"/>
+      <path d="M-20,-24 L18,-58 L38,-38 L5,-5 Z" fill="url(#magentaGradHdr)"/>
+      <path d="M-28,-44 C-5,-68 35,-65 58,-42 C74,-26 78,-4 70,16 L48,5 C54,-10 50,-24 38,-34 C22,-48 -8,-48 -28,-30 Z" fill="url(#cyanGradHdr)"/>
+      <path d="M-22,48 C10,58 48,52 68,26 C76,14 78,-2 72,-16 L52,-5 C55,7 52,18 44,26 C28,42 -4,42 -22,28 Z" fill="url(#yellowGradHdr)"/>
+    </g>
+  </g>
+
+  <!-- "MD" Text + "PRINTERS" Cyan Pill Badge -->
+  <g transform="translate(145, 30)">
+    <text x="0" y="44" font-family="'Plus Jakarta Sans', 'Arial Black', sans-serif" font-weight="900" font-size="46" fill="#0F172A" letter-spacing="1">MD</text>
+    <rect x="86" y="2" width="280" height="52" rx="26" fill="url(#cyanGradHdr)"/>
+    <text x="226" y="39" font-family="'Plus Jakarta Sans', 'Arial Black', sans-serif" font-weight="900" font-size="30" fill="#FFFFFF" text-anchor="middle" letter-spacing="3.5">PRINTERS</text>
+  </g>
+
+  <!-- Tagline below -->
+  <g transform="translate(145, 106)">
+    <text x="0" y="0" font-family="'Plus Jakarta Sans', 'Arial', sans-serif" font-weight="800" font-size="16.5" fill="url(#magentaGradHdr)" letter-spacing="2">DESIGN  PRINT  ADVERTISING</text>
+  </g>
+</svg>

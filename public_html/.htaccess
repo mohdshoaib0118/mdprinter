@@ -1,0 +1,23 @@
+# ============================================================
+# MD PRINTERS - APACHE HTTPD & REWRITE CONFIGURATION
+# ============================================================
+
+Options -Indexes +FollowSymLinks
+RewriteEngine On
+
+# Prevent Directory Browsing
+IndexIgnore *
+
+# Fix trailing slash issues if not a directory
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [L,R=301]
+
+# Handle Sitemap & Robots directly
+RewriteRule ^sitemap\.xml$ index.php?route=sitemap [L,QSA]
+RewriteRule ^robots\.txt$ index.php?route=robots [L,QSA]
+
+# Redirect all requests to index.php front-controller unless physical file or directory exists
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]
